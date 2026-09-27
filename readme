@@ -106,4 +106,112 @@ are implemented.)*
 
 ## Authors
 
+See the [AUTHORS](AUTHORS) file for the list of contributors.# AirBnB Clone - The Console
+
+## Description
+
+This project is the first step towards building a full-stack clone of the
+AirBnB web application. It lays the foundation for everything that comes
+after it: a command interpreter that can create, read, update, and destroy
+the core objects of the application (`User`, `State`, `City`, `Amenity`,
+`Place`, `Review`), and a storage engine that saves those objects to a JSON
+file so they persist between sessions.
+
+Later stages of the AirBnB clone project will build on top of this console:
+HTML/CSS templating, database storage, a REST API, and a dynamic front end
+will all reuse the classes and storage engine created here.
+
+## Command Interpreter
+
+The command interpreter is a custom shell, built with Python's `cmd`
+module, for managing the objects of the AirBnB clone project. It behaves
+like a limited version of a Unix shell, scoped to one job: creating,
+retrieving, updating, and destroying the application's objects.
+
+### How to start it
+
+Clone the repository, then from the root of the project run:
+
+```
+$ ./console.py
+```
+
+Alternatively:
+
+```
+$ python3 console.py
+```
+
+This drops you into an interactive prompt:
+
+```
+(hbnb)
+```
+
+The console also works in non-interactive mode, e.g. piping commands into
+it:
+
+```
+$ echo "help" | ./console.py
+```
+
+### How to use it
+
+Once inside the console, you can manage objects with the following
+commands:
+
+| Command   | Description                                              |
+|-----------|-----------------------------------------------------------|
+| `help`    | Shows available commands or help on a specific command    |
+| `create`  | Creates a new instance of a class, saves it, prints its id|
+| `show`    | Prints the string representation of an instance           |
+| `destroy` | Deletes an instance based on class name and id             |
+| `all`     | Prints string representations of all instances            |
+| `update`  | Updates an instance's attribute                            |
+| `quit`    | Exits the console                                          |
+| `EOF`     | Exits the console (Ctrl+D)                                  |
+
+Supported classes: `BaseModel`, `User`, `State`, `City`, `Amenity`,
+`Place`, `Review`.
+
+### Examples
+
+Starting the console and viewing help:
+
+```
+$ ./console.py
+(hbnb) help
+
+Documented commands (type help <topic>):
+========================================
+EOF  help  quit
+
+(hbnb) quit
+$
+```
+
+Creating and inspecting an object:
+
+```
+(hbnb) create BaseModel
+49faff9a-6318-451f-87b6-910505c55907
+(hbnb) show BaseModel 49faff9a-6318-451f-87b6-910505c55907
+[BaseModel] (49faff9a-6318-451f-87b6-910505c55907) {'id': '49faff9a-6318-451f-87b6-910505c55907', ...}
+(hbnb) all BaseModel
+["[BaseModel] (49faff9a-6318-451f-87b6-910505c55907) {...}"]
+(hbnb) destroy BaseModel 49faff9a-6318-451f-87b6-910505c55907
+(hbnb) quit
+```
+
+*(This section will be updated with real output once the console commands
+are implemented.)*
+
+## Environment
+
+- All files are interpreted on Ubuntu 20.04 LTS using Python 3.8.5
+- Code follows the `pycodestyle` (2.7.x) style guide
+- Every module, class, and function is documented
+
+## Authors
+
 See the [AUTHORS](AUTHORS) file for the list of contributors.
