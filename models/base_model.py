@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Defines the BaseModel class, the parent of all other model classes."""
+import models
 import uuid
 from datetime import datetime
 
@@ -7,11 +8,22 @@ from datetime import datetime
 class BaseModel:
     """Represents the base class for all AirBnB clone objects."""
 
-    def __init__(self):
-        """Initialize a new BaseModel with a unique id and timestamps."""
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+    def __init__(self, *args, **kwargs):
+        """Initialize a BaseModel, from kwargs if given or as a new one."""
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == "__class__":
+                    continue
+                elif key in ("created_at", "updated_at"):
+                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                    setattr(self, key, value)
+                else:
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
         """Return the string representation of the BaseModel instance."""
@@ -19,8 +31,9 @@ class BaseModel:
             self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
-        """Update updated_at with the current datetime."""
+        """Update updated_at with the current datetime and save to storage."""
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """Return a dictionary representation of the instance."""
