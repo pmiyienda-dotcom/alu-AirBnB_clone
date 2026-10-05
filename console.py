@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Defines HBNBCommand, the entry point of the command interpreter."""
 import cmd
+import shlex
 import models
 from models.base_model import BaseModel
 
@@ -58,6 +59,79 @@ class HBNBCommand(cmd.Cmd):
                 print(objects[key])
             else:
                 print("** no instance found **")
+
+    def do_destroy(self, arg):
+        """Delete an instance and save the change
+        Usage: destroy <class name> <id>
+        """
+        args = arg.split()
+        if not args:
+            print("** class name missing **")
+        elif args[0] not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+        elif len(args) < 2:
+            print("** instance id missing **")
+        else:
+            key = "{}.{}".format(args[0], args[1])
+            objects = models.storage.all()
+            if key in objects:
+                del objects[key]
+                models.storage.save()
+            else:
+                print("** no instance found **")
+
+    def do_all(self, arg):
+        """Print all instances, optionally filtered by class name
+        Usage: all or all <class name>
+        """
+        args = arg.split()
+        if args and args[0] not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+        result = []
+        for obj in models.storage.all().values():
+            if not args or obj.__class__.__name__ == args[0]:
+                result.append(str(obj))
+        print(result)
+
+    def do_update(self, arg):
+        """Update an instance by adding or changing one attribute
+        Usage: update <class name> <id> <attribute name> "<attribute value>"
+        """
+        args = shlex.split(arg)
+        if not args:
+            print("** class name missing **")
+        elif args[0] not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+        elif len(args) < 2:
+            print("** instance id missing **")
+        else:
+            key = "{}.{}".format(args[0], args[1])
+            objects = models.storage.all()
+            if key not in objects:
+                print("** no instance found **")
+            elif len(args) < 3:
+                print("** attribute name missing **")
+            elif len(args) < 4:
+                print("** value missing **")
+            else:
+                obj = objects[key]
+                name = args[2]
+                value = args[3]
+                if hasattr(obj, name):
+                    try:
+                        value = type(getattr(obj, name))(value)
+                    except ValueError:
+                        pass
+                else:
+                    for cast in (int, float):
+                        try:
+                            value = cast(value)
+                            break
+                        except ValueError:
+                            pass
+                setattr(obj, name, value)
+                obj.save()
 
 
 if __name__ == '__main__':
