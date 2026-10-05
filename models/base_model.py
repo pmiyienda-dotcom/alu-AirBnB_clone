@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Defines the BaseModel class, the parent of all other model classes."""
+import models
 import uuid
 from datetime import datetime
 
@@ -22,6 +23,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
         """Return the string representation of the BaseModel instance."""
@@ -29,8 +31,9 @@ class BaseModel:
             self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
-        """Update updated_at with the current datetime."""
+        """Update updated_at with the current datetime and save to storage."""
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """Return a dictionary representation of the instance."""
