@@ -2,6 +2,12 @@
 """Defines the FileStorage class that saves objects to a JSON file."""
 import json
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class FileStorage:
@@ -34,5 +40,10 @@ class FileStorage:
                 data = json.load(f)
         except FileNotFoundError:
             return
+        classes = {
+            "BaseModel": BaseModel, "User": User, "State": State,
+            "City": City, "Amenity": Amenity, "Place": Place,
+            "Review": Review}
         for key, value in data.items():
-            FileStorage.__objects[key] = BaseModel(**value)
+            cls = classes[value["__class__"]]
+            FileStorage.__objects[key] = cls(**value)
